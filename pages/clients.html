@@ -1,0 +1,108 @@
+<div class="pagetitle">
+    <h1>All Clients</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item active">Clients</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+              <div class="row">
+                  <div class="col-6">
+                      <h5 class="card-title">Clients List</h5>
+                    </div>
+                  <div class="col-6 text-end p-2">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered"><i class="bi bi-person-plus-fill me-1"></i> Add Clients</button>
+                </div>
+              </div>              
+            
+            <!-- <h5 class="card-title pill-right">C</h5> -->
+            <!-- <p>Add lightweight datatables to your project with using the <a href="https://github.com/fiduswriter/Simple-DataTables" target="_blank">Simple DataTables</a> library. Just add <code>.datatable</code> class name to any table you wish to conver to a datatable</p> -->
+
+            <!-- Table with stripped rows -->
+            <table class="table table-hover " id="clients_datatable">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Location</th>
+                  <th scope="col">Phone</th>
+                  <th scope="col">Monthly Amount</th>
+                  <th scope="col">Final Date</th>
+                </tr>
+              </thead>
+              <tbody id="clients_table_body">
+                
+              </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <div class="modal fade" id="verticalycentered" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Client</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form class="row g-3 needs-validation" novalidate>
+                <div class="col-md-12">
+                  <div class="form-floating has-validation">
+                    <input type="text" class="form-control" name="clientname" id="floatingName" placeholder="Your Name">
+                    <label for="floatingName">Client Name</label>
+                    <div class="invalid-feedback" id="clientnameerror">Please enter Client's Name</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                      <input type="text" class="form-control" name="phone" id="floatingPhone" placeholder="Phone Number">
+                      <label for="floatingPhone">Phone Number</label>
+                      <div class="invalid-feedback" id="phoneerror">Please enter Client's Phone Number</div>
+                    </div>
+                  </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="email" class="form-control" name="email" id="floatingEmail" placeholder="Email Address" value="info@tolclin.com">
+                    <label for="floatingEmail">Email Address</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" name="location" id="floatingLocation" placeholder="Location">
+                    <label for="floatingLocation">Location</label>
+                    <div class="invalid-feedback" id="locationerror">Please enter Client's location</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <select class="form-control" id="floatingbtype">
+                      <option value=""></option>
+                        <option value="HOME">HOME</option>
+                        <option value="OFFICE">OFFICE</option>
+                    </select>
+                    <label for="floatingbtype">Company Type</label>
+                    <div class="invalid-feedback" id="floatingbtypeerror">Please Select Client's Installation type</div>
+                  </div>
+                </div>
+              </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" id="saveclient" class="btn btn-success">Save Client</button>
+        </div>
+      </div>
+    </div>
+  </div> 

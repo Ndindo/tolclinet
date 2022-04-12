@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>TOLCLINET</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  <div id="links-div"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">  
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+    <!-- <div id="aside-div"></div> -->
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+  </main><!-- End #main -->
+  <div id="footer-div"></div>
+  
+  <script>
+    $(document).ready(function() {
+      $("#links-div").load("pages/links.html")
+      $("#header").load("pages/header.html")
+      $("#sidebar").load("pages/aside.html")
+      $("#footer-div").load("pages/footer.html")
+      $("#main").load("pages/payments.html")  
+      
+      $(document).delegate("#savepayment", "click", function(){
+        let client = $("#floatingClient").val();
+        let date = $("input[name='paymentdate']").val();
+        let amount = parseFloat($("input[name='amountpaid']").val())
+
+        if(client == "" || client == null){          
+          $("#floatingClienterror").show().delay(5000).fadeOut();
+          $("#floatingClient").addClass("is-invalid").delay(5000).queue(function( next ){
+              $(this).removeClass('is-invalid'); 
+              next();
+          });
+        }
+        if(date == ""){
+          $("#floatingDateerror").show().delay(5000).fadeOut();
+          $("#floatingDate").addClass("is-invalid").delay(5000).queue(function( next ){
+              $(this).removeClass('is-invalid'); 
+              next();
+          });
+        }
+        if(amount < 1 || isNaN(amount) ){
+          $("#floatingAmounterror").show().delay(5000).fadeOut();
+          $("#floatingAmount").addClass("is-invalid").delay(5000).queue(function( next ){
+              $(this).removeClass('is-invalid'); 
+              next();
+          });
+        }
+        if(client=="" || date=="" || amount < 1){
+          console.log("check fields")
+          return false;
+        }
+        $.ajax({
+          url: localStorage.getItem("api_url")+"savepayment",
+          method:"POST",
+          dataType: "json",
+          data: {
+            client: client,
+            date: date,
+            amount: amount,
+            user_id: localStorage.getItem("user_id")
+          },
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
+          },   
+          success: function(data){
+            if(data.success==true){
+              window.location.reload()
+            }else{
+              alert(data.error)
+            }
+          },
+          statusCode: {
+            401: function() {
+              alert('Unauthorized User, Please Login Again');
+              window.location.href = "index.html";
+            }
+          }
+        });
+      })
+      
+      $(document).delegate("#floatinFromdate", "change", function(){
+          Get_Payments()
+      })
+      $(document).delegate("#floatinTodate", "change", function(){
+          Get_Payments()
+      })
+
+      $(document).delegate("#floatingClient", "change", function(){
+          let client=$("#floatingClient").val()
+          $.ajax({
+            url: localStorage.getItem("api_url")+"user-details",
+            method:"POST",
+            type: "POST",
+            dataType: "json",
+            // contentType: "application/json;charset=utf-8",
+            data: {
+              user_fetch_id: client,
+              user_id: localStorage.getItem("user_id")
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
+            },   
+            success: function(data){
+              if(data.success==true){
+                $("#floatingPhone").val(data.users_details[0].phone)
+                $("#floatingEmail").val(data.users_details[0].email)
+                $("#floatingAmount").val(data.users_details[0].amount)
+              }else{
+                alert(data.message)
+              }
+            },
+            statusCode: {
+              401: function() {
+                alert('Unauthorized User, Please Login Again');
+                window.location.href = "index.html";
+              }
+            }
+          });
+      })    
+    });
+    $( window ).on( "load", function() {
+        $("#floatinFromdate").val(startingdate);
+        $("#floatingDate").val(today)
+        $("#floatinTodate").val(today)
+        Get_Payments()
+        getclients()
+        .then((data) => {
+            var select_client = $("#floatingClient")
+            select_client.append($('<option>', {value: "",text: "Select Client"}));
+            for (var i = 0; i < data.users_details.length; i++) {
+                var client = data.users_details[i]
+                var client_option = $("<option value='"+client.id+"'>"+client.name+"</option>")
+                select_client.append(client_option)
+            }
+        })
+        .catch((error) => {
+          if(error == 401){
+            alert('Unauthorized User, Please Login Again');
+            window.location.href = "index.html";
+          }
+      })
+    })
+
+    function Get_Payments(){
+        let fromdate=$("#floatinFromdate").val()
+        let todate=$("#floatinTodate").val()
+        getpayments(fromdate,todate)
+        .then((data)=>{
+          $("#payments_table_body").empty()
+          var payments_table_body = $("#payments_table_body")
+          for (var i = 0; i < data.payments.length; i++) {
+              var payment = data.payments[i]
+              var payment_row_row = $("<tr>")
+              payment_row_row.append($("<td>").text(i+1))
+              payment_row_row.append($("<td>").text(payment.date))
+              payment_row_row.append($("<td>").text(payment.name))
+              payment_row_row.append($("<td>").text(payment.amount))
+              payment_row_row.append($("<td>").text(payment.code))
+              payments_table_body.append(payment_row_row)
+          }
+        })
+        .catch((error)=>{
+          if(error==401){
+            alert('Unauthorized User, Please Login Again');
+            window.location.href = "index.html";
+          }
+        })
+      }
+  </script>
+
+</body>
+
+</html>

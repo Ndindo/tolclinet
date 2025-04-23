@@ -1,0 +1,20 @@
+#verse{
+    padding-left: 20px;
+    font-style: italic;
+}
+.alert-info{
+    font-size: 41px !important;
+}
+.hidden {
+    display: none;
+}
+.has-success .form-control {
+    border-color: #31ce36 !important;
+    color: #242424 !important;
+}
+.commentp{
+    font-style: italic;
+    font-size: 14px;
+    color: #999999;
+    margin-top: -10px;
+}

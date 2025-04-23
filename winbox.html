@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Winbox</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+    <link rel="icon" href="assets/img/tolclinet/favicon.ico" type="image/x-icon"/>
+    <!-- Fonts and icons -->
+    <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: ["Font Awesome 5 Solid","Font Awesome 5 Regular","Font Awesome 5 Brands","simple-line-icons",],
+          urls: ["assets/css/fonts.min.css"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/plugins.min.css">
+    <link rel="stylesheet" href="assets/css/tolclinet.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/bootstrap.min.css"/>
+    <link rel="stylesheet" href="assets/css/custom.css">
+  </head>
+  <body>
+    <input type="hidden" id="pagename" value="winbox">
+    <div class="wrapper">
+
+      <!-- Sidebar -->
+      <!--#include virtual="assets/components/sidebar.html" -->
+      <!-- End of SideBar -->
+
+      <div class="main-panel">
+
+        <!-- Main Header -->
+        <!--#include virtual="assets/components/header.html" -->
+        <!-- End Main Header -->
+
+        <div class="container">
+          <div class="page-inner">
+
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+              <div>
+                <h3 class="fw-bold mb-3" id="mikrotik_location">Winbox</h3>
+              </div>
+              <div class="ms-md-auto py-2 py-md-0">
+                <a href="#" class="btn btn-primary btn-round" data-bs-toggle="modal" data-bs-target="#locationModal">Switch Location</a>
+              </div>
+            </div>
+            
+            
+            <div class="modal fade modal-lg" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="locationModalLabel">Switch Location</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="form-group">
+                            <label for="select_location" class="col-md-3 col-form-label">Location</label>
+                            <select name="select_location" id="select_location" class="form-control">
+                                <option value="1">KIEMBENI BOMBO</option>
+                                <option value="2">VOI</option>
+                                <option value="3">BAMBURI FISHERIES</option>
+                                <option value="4">KIEMBENI ESTATE</option>
+                                <option value="5">PIRATES</option>
+                                <option value="7">WUNDANYI</option>
+                                <option value="8">KIEMBENI SHILLA</option>
+                            </select>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" id="switch_btn">Switch</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                      <!-- <div class="card-header">
+                        <h4 class="card-title">Multi Filter Select</h4>
+                      </div> -->
+                      <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                          <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Users</button>
+                          <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Host</button>
+                          <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Active</button>
+                        </div>
+                      </nav>                      
+                      <div class="card-body">
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+
+                                <div class="table-responsive">
+                                    <table id="mikrotik-users" class="display table table-striped table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th>Name</th>
+                                          <th>Profile</th>
+                                          <th>Limit-Uptime</th>
+                                          <th>Uptime</th> 
+                                          <th>Action</th>                                         
+                                        </tr>
+                                      </thead>
+                                      <tbody></tbody>
+                                    </table>
+                                  </div>
+
+                            </div>
+
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+                                <div class="table-responsive">
+                                    <table id="mikrotik-host" class="display table table-striped table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th>Mac Address</th>
+                                          <th>IP Address</th>
+                                          <th>Uptime</th>
+                                          <th>Idle Time</th>
+                                          <th>Bytes In</th>
+                                          <th>Bytes Out</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody></tbody>
+                                    </table>
+                                  </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
+                              <div class="table-responsive">
+                                  <table id="mikrotik-active" class="display table table-striped table-hover">
+                                    <thead>
+                                      <tr>
+                                        <th>Address</th>
+                                        <th>User</th>
+                                        <th>Time</th>
+                                        <th>RX/TX</th>
+                                        <th>Action</th> 
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>
+                                </div>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- include footer -->
+        <!--#include virtual="assets/components/footer.html" -->
+        <!-- End of Footer -->
+      </div>
+    </div>
+
+    <script src="assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/core/popper.min.js"></script>
+    <script src="assets/js/core/bootstrap.min.js"></script>
+
+    <!-- jQuery Scrollbar -->
+    <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+    <!-- Chart JS -->
+    <script src="assets/js/plugin/chart.js/chart.min.js"></script>
+
+    <!-- jQuery Sparkline -->
+    <script src="assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+    <!-- Chart Circle -->
+    <script src="assets/js/plugin/chart-circle/circles.min.js"></script>
+
+    <!-- Datatables -->
+    <script src="assets/js/plugin/datatables/datatables.min.js"></script>
+
+    <!-- Bootstrap Notify -->
+    <script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+    <!-- jQuery Vector Maps -->
+    <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+    <script src="assets/js/plugin/jsvectormap/world.js"></script>
+
+    <!-- Sweet Alert -->
+    <script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+
+    <!-- tolclinet JS -->
+    <script src="assets/js/tolclinet.min.js"></script>
+
+    <!-- tolclinet DEMO methods, don't include it in your project! -->
+    <script src="assets/js/setting-demo.js"></script>
+    <script src="assets/js/demo.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <script src="assets/js/csi.js"></script>
+    <script>
+      function removeuser(user){
+        alert("Remove User: "+user)
+        alertify.confirm("Remove User", "Are you sure you want to remove user: "+user+"?", function(){
+          $.ajax({
+            url: localStorage.getItem("api_url")+"mikrotik_remove_user",
+            type: "POST",
+            method: "POST",
+            dataType: "json",
+            data:{"location_id" : localStorage.getItem("location_id"),"counter" : localStorage.getItem("location_counter"),"user":user},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
+            },
+            success: function (response) {
+              if(response.success){
+                  alertify.success(response.message)
+                  getMikrotikUsers();
+              }else{
+                  alertify.error(response.message)
+              }
+            },
+          })
+        }, function(){
+          alertify.error('Cancel')
+        });
+      }
+
+      function resetuser(user){
+        alert("Reset User: "+user)
+        alertify.confirm("Reset User", "Are you sure you want to reset user: "+user+"?", function(){
+          $.ajax({
+            url: localStorage.getItem("api_url")+"mikrotik_reset_user",
+            type: "POST",
+            method: "POST",
+            dataType: "json",
+            data:{"location_id" : localStorage.getItem("location_id"),"counter" : localStorage.getItem("location_counter"),"user":user},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
+            },
+            success: function (response) {
+              if(response.success){
+                  alertify.success(response.message)
+                  getMikrotikUsers();
+              }else{
+                  alertify.error(response.message)
+              }
+            },
+          })
+        }, function(){
+          alertify.error('Cancel')
+        });
+      }
+
+
+      function getMikrotikUsers() {
+        $("#mikrotik-users tbody").html(
+          `<tr>
+              <td colspan="5" class="text-center">Loading Users [${localStorage.getItem("location_name")}]...</td>
+            </tr>`
+        )
+          $.ajax({
+            url: localStorage.getItem("api_url")+"mikrotik_users",
+            type: "POST",
+            method: "POST",
+            dataType: "json",
+            data:{"location_id" : localStorage.getItem("location_id"),"counter" : localStorage.getItem("location_counter")},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
+            },
+            success: function (response) {
+              if(response.success){
+                  let users = response.mikrotik_users
+                  let table = $("#mikrotik-users")
+                  let userstabledata=''
+                  users.forEach(user => {
+                      userstabledata += `
+                      <tr>
+                          <td>${user["name"]}</td>
+                          <td>${user["profile"]}</td>
+                          <td>${user["limit-uptime"]}</td>
+                          <td>${user["uptime"]}</td>
+                          <td>
+                            <button class="btn btn-danger btn-sm" onclick="removeuser('${user["name"]}');"><i class="fas fa-minus-circle"></i></button>
+                            <button class="btn btn-info btn-sm" onclick="resetuser('${user["name"]}');"><i class="fas fa-sync"></i></button>
+                          </td>
+                      </tr>
+                      `
+                  })
+                  $("#mikrotik-users tbody").html(userstabledata)
+                  $("#mikrotik-users").DataTable().destroy();
+                  $("#mikrotik-users").DataTable({
+                      pageLength: 10,
+                      initComplete: function () {
+                          this.api()
+                          .columns()
+                      },
+                    });                      
+              }else{
+                  alertify.error("Error fetching users")
+              }
+            },
+          })
+    }
+
+    function getMikrotikHost(){
+      $("#mikrotik-host tbody").html(
+        `<tr>
+            <td colspan="6" class="text-center">Loading Host [${localStorage.getItem("location_name")}]...</td>
+          </tr>`
+      )
+        $.ajax({
+          url: localStorage.getItem("api_url")+"mikrotik_host",
+          type: "POST",
+          method: "POST",
+          dataType: "json",
+          data:{"location_id" : localStorage.getItem("location_id"),"counter" : localStorage.getItem("location_counter")},
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
+          },
+          success: function (response) {
+            if(response.success){
+                let hosts = response.mikrotik_host
+                let table = $("#mikrotik-host")
+                let hosttabledata=''
+                hosts.forEach(host => {
+                  let bytes_in=parseInt(host["bytes-in"])
+                  let bytes_out=parseInt(host["bytes-out"])
+                  let bytesin=""
+                  let bytesout=""
+                  if(bytes_in > 1024 && bytes_in < 1048576){
+                    bytesin = (bytes_in / 1024).toFixed(2) + ' KiB'
+                  }else if(bytes_in > 1048576 && bytes_in < 1073741824){
+                    bytesin = (bytes_in / 1048576).toFixed(2) + ' MiB'
+                  }else if(bytes_in > 1073741824){
+                    bytesin = (bytes_in / 1073741824).toFixed(2) + ' GiB'
+                  }
+
+                  if(bytes_out > 1024 && bytes_in < 1048576){
+                    bytesout = (bytes_out / 1024).toFixed(2) + ' KiB'
+                  }else if(bytes_out > 1048576 && bytes_in < 1073741824){
+                    bytesout = (bytes_out / 1048576).toFixed(2) + ' MiB'
+                  }else if(bytes_out > 1073741824){
+                    bytesout = (bytes_out / 1073741824).toFixed(2) + ' GiB'
+                  }
+                    hosttabledata += `
+                      <tr>
+                        <td><p>${host["mac-address"]}</p><p class='commentp'>${host["comment"] ? host["comment"] : ''}</p></td>
+                        <td>${host["address"]}</td>
+                        <td>${host["uptime"]}</td>
+                        <td>${host["idle-time"]}</td>
+                        <td>${bytesout}</td>
+                        <td>${bytesin}</td>
+                      </tr>
+                    `
+                })
+                $("#mikrotik-host tbody").html(hosttabledata)
+                $("#mikrotik-host").DataTable().destroy();
+                $("#mikrotik-host").DataTable({
+                    pageLength: 10,
+                    initComplete: function () {
+                        this.api()
+                        .columns()
+                    },
+                  });                      
+            }else{
+                alertify.error("Error fetching Host")
+            }
+          },
+        })
+    }
+
+
+    function getMikrotikActive(){
+      $("#mikrotik-active tbody").html(
+        `<tr>
+            <td colspan="6" class="text-center">Loading Active Users [${localStorage.getItem("location_name")}]...</td>
+          </tr>`
+      )
+        $.ajax({
+          url: localStorage.getItem("api_url")+"mikrotik_active",
+          type: "POST",
+          method: "POST",
+          dataType: "json",
+          data:{"location_id" : localStorage.getItem("location_id"),"counter" : localStorage.getItem("location_counter")},
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
+          },
+          success: function (response) {
+            if(response.success){
+                let active = response.mikrotik_active
+                let table = $("#mikrotik-active")
+                let actvtabledata=''
+                active.forEach(actv => {
+                  let bytes_in=parseInt(actv["bytes-in"])
+                  let bytes_out=parseInt(actv["bytes-out"])
+                  let bytesin=""
+                  let bytesout=""
+                  if(bytes_in > 1024 && bytes_in < 1048576){
+                    bytesin = (bytes_in / 1024).toFixed(2) + ' KiB'
+                  }else if(bytes_in > 1048576 && bytes_in < 1073741824){
+                    bytesin = (bytes_in / 1048576).toFixed(2) + ' MiB'
+                  }else if(bytes_in > 1073741824){
+                    bytesin = (bytes_in / 1073741824).toFixed(2) + ' GiB'
+                  }
+
+                  if(bytes_out > 1024 && bytes_in < 1048576){
+                    bytesout = (bytes_out / 1024).toFixed(2) + ' KiB'
+                  }else if(bytes_out > 1048576 && bytes_in < 1073741824){
+                    bytesout = (bytes_out / 1048576).toFixed(2) + ' MiB'
+                  }else if(bytes_out > 1073741824){
+                    bytesout = (bytes_out / 1073741824).toFixed(2) + ' GiB'
+                  }
+                    actvtabledata += `
+                      <tr>
+                        <td><p>${actv["mac-address"]}</p><p>${actv["address"]}</p></td>
+                        <td><p>${actv["user"]}</p><p class='commentp'>${actv["login-by"]}</p></td>
+                        <td><p>Uptime: ${actv["uptime"]}</p><p>Idle Time: ${actv["idle-time"]}</p><p>Session Time: ${actv["session-time-left"]}</p></td>
+                        <td><p>TX: ${bytesout}</p><p>RX: ${bytesin}</p></td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="removeuser('${actv["name"]}');"><i class="fas fa-minus-circle"></i></button>
+                          </td>
+                      </tr>
+                    `
+                })
+                $("#mikrotik-active tbody").html(actvtabledata)
+                $("#mikrotik-active").DataTable().destroy();
+                $("#mikrotik-active").DataTable({
+                    pageLength: 10,
+                    initComplete: function () {
+                        this.api()
+                        .columns()
+                    },
+                  });                      
+            }else{
+                alertify.error("Error fetching Active Users")
+            }
+          },
+        })
+    }
+
+    $(document).ready(function() {
+      $("#mikrotik_location").text(localStorage.getItem("location_name"))
+      $("#nav-home-tab").on("click", function() {
+          getMikrotikUsers();         
+      })
+
+      $("#nav-profile-tab").on("click", function() {
+          getMikrotikHost();         
+      })
+
+      $("#nav-contact-tab").on("click", function() {
+          getMikrotikActive();          
+      })
+
+      $("#switch_btn").on("click", function(){
+        let location_id = $("#select_location").val()
+        let selected_location = $("#select_location option:selected").text()
+        localStorage.setItem("location_id", location_id);
+        localStorage.setItem("location_name", selected_location);
+        if(location_id == 4){          
+          localStorage.setItem("location_counter", 1);
+        }else{
+          localStorage.setItem("location_counter", 0);
+        }
+        //reload current page
+        location.reload();
+      })       
+    })
+
+    $(window).on( "load", function() {
+      getMikrotikUsers();     
+    })
+      
+    </script>
+  </body>
+</html>
